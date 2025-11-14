@@ -1,139 +1,173 @@
-// script.js (версия с реальной отправкой на сервер)
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('feedbackForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const messageInput = document.getElementById('message');
-    const nameError = document.getElementById('nameError');
-    const emailError = document.getElementById('emailError');
-    const messageError = document.getElementById('messageError');
-    const successMessage = document.getElementById('successMessage');
-    const submitBtn = form.querySelector('.submit-btn');
-
-    // Функция валидации email
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Валидация
+    let isValid = true;
+    
+    // Проверка имени
+    const name = document.getElementById('name');
+    if (!name.value.trim()) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('nameError').style.display = 'none';
     }
-
-    // Сброс ошибок
-    function resetErrors() {
-        nameError.style.display = 'none';
-        emailError.style.display = 'none';
-        messageError.style.display = 'none';
-        nameInput.style.borderColor = '#ddd';
-        emailInput.style.borderColor = '#ddd';
-        messageInput.style.borderColor = '#ddd';
+    
+    // Проверка email
+    const email = document.getElementById('email');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.value)) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('emailError').style.display = 'none';
     }
-
-    // Показать ошибку
-    function showError(input, errorElement, message) {
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-        input.style.borderColor = '#e74c3c';
+    
+    // Проверка сообщения
+    const message = document.getElementById('message');
+    if (!message.value.trim()) {
+        document.getElementById('messageError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('messageError').style.display = 'none';
     }
-
-    // Валидация формы
-    function validateForm() {
-        let isValid = true;
-        resetErrors();
-
-        if (!nameInput.value.trim()) {
-            showError(nameInput, nameError, 'Пожалуйста, введите ваше имя');
-            isValid = false;
-        }
-
-        if (!emailInput.value.trim()) {
-            showError(emailInput, emailError, 'Пожалуйста, введите ваш email');
-            isValid = false;
-        } else if (!isValidEmail(emailInput.value.trim())) {
-            showError(emailInput, emailError, 'Пожалуйста, введите корректный email');
-            isValid = false;
-        }
-
-        if (!messageInput.value.trim()) {
-            showError(messageInput, messageError, 'Пожалуйста, введите ваше сообщение');
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    // Реальная отправка на сервер
-    async function sendFormData(formData) {
-        try {
-            const response = await fetch('/api/feedback', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Ошибка сервера');
-            }
-
-            return await response.json();
-        } catch (error) {
-            throw new Error('Не удалось отправить форму: ' + error.message);
-        }
-    }
-
-    // Обработчик отправки формы
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+    
+    if (isValid) {
+        // Отправка данных на сервер
+        const submitBtn = document.querySelector('.submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Отправка...';
         
-        if (validateForm()) {
-            const formData = {
-                name: nameInput.value.trim(),
-                email: emailInput.value.trim(),
-                message: messageInput.value.trim(),
-                timestamp: new Date().toISOString()
-            };
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Отправка...';
+        // Имитация отправки
+        setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('feedbackForm').reset();
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Отправить сообщение';
+        }, 2000);
+    }
+            const form = document.getElementById('feedbackForm');
+            const successMessage = document.getElementById('successMessage');
             
-            try {
-                const result = await sendFormData(formData);
+            // Скрываем сообщение об успехе при загрузке
+            successMessage.style.display = 'none';
+            
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
                 
-                successMessage.style.display = 'block';
-                form.reset();
+                // Сбрасываем предыдущие ошибки
+                resetErrors();
                 
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                }, 5000);
+                // Проверяем валидность формы
+                if (validateForm()) {
+                    // Показываем сообщение об успехе
+                    successMessage.style.display = 'block';
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Очищаем форму
+                    form.reset();
+                    
+                    // Скрываем сообщение через 5 секунд
+                    setTimeout(function() {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                }
+            });
+            
+            // Функция сброса ошибок
+            function resetErrors() {
+                const errorElements = document.querySelectorAll('.error');
+                errorElements.forEach(function(error) {
+                    error.style.display = 'none';
+                });
                 
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert(error.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Отправить сообщение';
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(function(input) {
+                    input.style.borderColor = '#ddd';
+                });
             }
-        }
-    });
-
-    // Сброс ошибок при вводе
-    nameInput.addEventListener('input', () => {
-        if (nameInput.value.trim()) {
-            nameError.style.display = 'none';
-            nameInput.style.borderColor = '#ddd';
-        }
-    });
-
-    emailInput.addEventListener('input', () => {
-        if (emailInput.value.trim() && isValidEmail(emailInput.value.trim())) {
-            emailError.style.display = 'none';
-            emailInput.style.borderColor = '#ddd';
-        }
-    });
-
-    messageInput.addEventListener('input', () => {
-        if (messageInput.value.trim()) {
-            messageError.style.display = 'none';
-            messageInput.style.borderColor = '#ddd';
-        }
-    });
-});
+            
+            // Функция валидации формы
+            function validateForm() {
+                let isValid = true;
+                
+                // Проверка имени
+                const name = document.getElementById('name').value.trim();
+                if (name === '') {
+                    showError('nameError', 'name');
+                    isValid = false;
+                }
+                
+                // Проверка email
+                const email = document.getElementById('email').value.trim();
+                if (email === '') {
+                    showError('emailError', 'email');
+                    isValid = false;
+                } else if (!isValidEmail(email)) {
+                    showError('emailError', 'email', 'Пожалуйста, введите корректный email адрес');
+                    isValid = false;
+                }
+                
+                // Проверка темы
+                const subject = document.getElementById('subject').value;
+                if (subject === '') {
+                    showError('subjectError', 'subject');
+                    isValid = false;
+                }
+                
+                // Проверка сообщения
+                const message = document.getElementById('message').value.trim();
+                if (message === '') {
+                    showError('messageError', 'message');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            // Функция проверки email
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            // Функция показа ошибки
+            function showError(errorId, fieldId, customMessage = null) {
+                const errorElement = document.getElementById(errorId);
+                const fieldElement = document.getElementById(fieldId);
+                
+                if (errorElement && fieldElement) {
+                    if (customMessage) {
+                        errorElement.textContent = customMessage;
+                    }
+                    errorElement.style.display = 'block';
+                    fieldElement.style.borderColor = '#e74c3c';
+                }
+            }
+            
+            // Реальная валидация при вводе
+            const fields = ['name', 'email', 'subject', 'message'];
+            fields.forEach(function(fieldId) {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        const errorElement = document.getElementById(fieldId + 'Error');
+                        if (errorElement) {
+                            errorElement.style.display = 'none';
+                            field.style.borderColor = '#ddd';
+                        }
+                    });
+                    
+                    // Для select элемента
+                    if (field.tagName === 'SELECT') {
+                        field.addEventListener('change', function() {
+                            const errorElement = document.getElementById(fieldId + 'Error');
+                            if (errorElement) {
+                                errorElement.style.display = 'none';
+                                field.style.borderColor = '#ddd';
+                            }
+                        });
+                    }
+                }
+            });
+        });
