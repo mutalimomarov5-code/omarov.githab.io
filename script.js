@@ -86,7 +86,27 @@ document.getElementById('feedbackForm').addEventListener('submit', function(e) {
                     input.style.borderColor = '#ddd';
                 });
             }
-            
+             function displayFormData(formData) {
+        console.log('=== ВВЕДЕННЫЕ ДАННЫЕ ФОРМЫ ===');
+        console.log('Имя:', formData.name);
+        console.log('Email:', formData.email);
+        console.log('Сообщение:', formData.message);
+        console.log('Время отправки:', formData.timestamp);
+        console.log('================================');
+        
+        // Также можно вывести в alert или на страницу
+        alert(`Данные формы:\n\nИмя: ${formData.name}\nEmail: ${formData.email}\nСообщение: ${formData.message}\n\n(Также проверьте консоль браузера)`);
+        
+        // Или вывести на страницу в специальный блок
+        const outputDiv = document.getElementById('formDataOutput') || createOutputElement();
+        outputDiv.innerHTML = `
+            <h3>Введенные данные:</h3>
+            <p><strong>Имя:</strong> ${formData.name}</p>
+            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Сообщение:</strong> ${formData.message}</p>
+            <p><strong>Время:</strong> ${new Date(formData.timestamp).toLocaleString()}</p>
+        `;
+    }
             // Функция валидации формы
             function validateForm() {
                 let isValid = true;
@@ -171,3 +191,4 @@ document.getElementById('feedbackForm').addEventListener('submit', function(e) {
                 }
             });
         });
+
