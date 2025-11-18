@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма обратной связи</title>
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=R24Zz39OESY7hXaYbzseFzfdsFM7WZ16jpw9OhwTdBGofn0mKgLQUm6yfncc3-AjM0N5Kb0X8BcnTMJp9zwXvKN9vQsR-JHck-k1WbCdnGloWlOrH0cODS3vv3QaJRSn" charset="UTF-8"></script><style>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -74,8 +74,7 @@
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -85,8 +84,7 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -153,6 +151,32 @@
             color: #666;
         }
 
+        /* Стили для блока вывода данных */
+        #formDataOutput {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+        }
+
+        #formDataOutput h3 {
+            margin-bottom: 10px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        #formDataOutput p {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+
+        #formDataOutput strong {
+            color: #34495e;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -199,14 +223,15 @@
             ✅ Спасибо! Ваше сообщение успешно отправлено.
         </div>
 
+        <!-- Блок для вывода данных будет создаваться автоматически скриптом -->
+        
         <div class="contact-info">
             <p>Вы также можете связаться со мной напрямую:</p>
-            <p>Email: mutalimomarov5@gmail.com</p>
+            <p>Email: example@email.com</p>
         </div>
     </div>
 
-    <!-- Подключаем внешний JavaScript файл -->
+    <!-- Подключаем JavaScript файл -->
     <script src="script.js"></script>
 </body>
 </html>
-
